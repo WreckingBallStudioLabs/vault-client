@@ -10,7 +10,7 @@ const request = require("sync-request");
 // Const and vars
 //////
 
-const host = process.env.EDEX_VAULT_URL;
+const host = process.env.VAULT_URL;
 
 //////
 // Validates env vars

@@ -13,9 +13,9 @@
 ## Requirements
 
 The Vault client assumes that you have a reachable and set up Vault server. The following env vars are required:
-- `EDEX_VAULT_URL`: Vault host.
-- `EDEX_VAULT_USERNAME`: Vault user username provided by an admin/operator.
-- `EDEX_VAULT_PWD`: Vault user password provided by an admin/operator.
+- `VAULT_URL`: Vault host.
+- `VAULT_USERNAME`: Vault user username provided by an admin/operator.
+- `VAULT_PWD`: Vault user password provided by an admin/operator.
 - `NODE_ENV`: Specifies what type of environment it's running.
 
 ## How it works

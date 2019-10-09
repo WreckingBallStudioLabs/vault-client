@@ -40,7 +40,7 @@ require("./index")({
 assertions();
 
 // Loading from cache scenario
-process.env.EDEX_VAULT_URL = "blablabla";
+process.env.VAULT_URL = "blablabla";
 require("./index")();
 assertions();
 

@@ -32,7 +32,7 @@ module.exports = (settings) => {
 	// Merges the default and user settings
 	settings = Object.assign({
 		// Secret version
-		secretVersion: process.env.EDEX_VAULT_SECRETS_VERSION, // default to latest
+		secretVersion: process.env.VAULT_SECRETS_VERSION, // default to latest
 		// Human auth strategy
 		humanAuthStrategy: "userpass",
 		// Machine to machine auth strategy
