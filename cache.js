@@ -11,7 +11,7 @@ const path = require("path");
 // Const and vars
 //////
 
-const secFilename = process.env.EDEX_VAULT_CACHE_FILENAME || ".sec.json";
+const secFilename = process.env.VAULT_CACHE_FILENAME || ".sec.json";
 
 //////
 // Exported functionality(ies)

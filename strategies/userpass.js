@@ -10,8 +10,8 @@ const request = require("../request");
 // Const and vars
 //////
 
-const username = process.env.EDEX_VAULT_USERNAME;
-const pwd = process.env.EDEX_VAULT_PWD;
+const username = process.env.VAULT_USERNAME;
+const pwd = process.env.VAULT_PWD;
 
 //////
 // Validates env vars
