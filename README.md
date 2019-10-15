@@ -18,6 +18,10 @@ The Vault client assumes that you have a reachable and set up Vault server. The 
 - `VAULT_PWD`: Vault user password provided by an admin/operator.
 - `NODE_ENV`: Specifies what type of environment it's running.
 
+The following are optional:
+- `VAULT_CONFIGURATIONS_VERSION`: Specifies the version of the configuration to be retrieved.
+- `VAULT_CACHE_FILENAME`: The cache filename.
+
 ## How it works
 
 Each time an application runs, the Vault client will automatically log in the developer and application. Configurations can be accessed via `process.env`.

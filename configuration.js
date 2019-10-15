@@ -28,7 +28,7 @@ if (!appName) throw new Error("appRole auth strategy requires application name."
  * Get configurations.
  *
  * @param {String} token token to be used in the request
- * @param {String} version the version of the secret to be retrieved
+ * @param {String} version the version of the configurations to be retrieved
  * @param {String} path the fully qualified path of the configurations
  *
  * @returns configurations
@@ -57,7 +57,7 @@ const get = (token, version, path) => {
  * A convenient way to get the global configurations.
  *
  * @param {String} token token to be used in the request
- * @param {String} version the version of the secret to be retrieved
+ * @param {String} version the version of the configurations to be retrieved
  *
  * @returns configurations
  */
@@ -69,7 +69,7 @@ const getGlobal = (token, version) => {
  * A convenient way to get configurations using the package name.
  *
  * @param {String} token token to be used in the request
- * @param {String} version the version of the secret to be retrieved
+ * @param {String} version the version of the configurations to be retrieved
  *
  * @returns configurations
  */
@@ -78,8 +78,29 @@ const getByPackageName = (token, version) => {
 	return get(token, version, configurationsURL);
 };
 
+/**
+ * Validate if the loaded configuration contains all the required env vars
+ *
+ * @param {Array} requiredEnvVars a list of required env vars
+ * @param {Object} configurations configurations
+ */
+const validate = (requiredEnvVars, configurations) => {
+	const listOfNotFound = [];
+
+	// Stores all keys that aren't found
+	requiredEnvVars.forEach((key) => {
+		if (!Object.keys(configurations).includes(key)) listOfNotFound.push(key);
+	});
+
+	if (listOfNotFound.length > 0) {
+		// Breaks the application in case of any
+		throw new Error(`Invalid config! Missing keys: ${listOfNotFound.join(', ')}`)
+	}
+};
+
 module.exports = {
 	get,
 	getGlobal,
-	getByPackageName
+	getByPackageName,
+	validate
 };

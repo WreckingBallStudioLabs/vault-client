@@ -26,8 +26,8 @@ const load = () => {
 	let configurations;
 
 	try {
-		const pathToSecret = path.resolve(secFilename);
-		configurations = require(pathToSecret);
+		const pathToConfiguration = path.resolve(secFilename);
+		configurations = require(pathToConfiguration);
 		configurations = Buffer.from(configurations.sec, "base64").toString("ascii");
 		configurations = JSON.parse(configurations);
 	} catch (error) {

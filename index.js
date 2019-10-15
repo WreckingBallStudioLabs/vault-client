@@ -28,11 +28,21 @@ if (!environment) throw new Error("Environment isn't defined.");
 // Exported functionality(ies)
 //////
 
+/**
+ * Constructs a new Vault client
+ *
+ * @param {Object} [settings] custom settings
+ * @param {Object} [settings.configurationVersion] version of the configuration to be retrieved
+ * @param {Object} [settings.humanAuthStrategy]  human auth strategy
+ * @param {Object} [settings.m2mAuthStrategy] machine auth strategy
+ * @param {Object} [settings.configurations] a list of configurations to be retrieved
+ * @param {Object} [settings.requiredEnvVars] a list of required keys
+ */
 module.exports = (settings) => {
 	// Merges the default and user settings
 	settings = Object.assign({
-		// Secret version
-		secretVersion: process.env.VAULT_SECRETS_VERSION, // default to latest
+		// Configuration version
+		configurationVersion: process.env.VAULT_CONFIGURATIONS_VERSION, // default to latest
 		// Human auth strategy
 		humanAuthStrategy: "userpass",
 		// Machine to machine auth strategy
@@ -85,13 +95,14 @@ GOOD LUCK!
 
 	let finalConfigurations = {};
 
+	// Custom configurations
 	if (!settings.configurations) {
 		// Retrieve configuration
-		const globalConfigurations = configuration.getGlobal(token, settings.secretVersion);
+		const globalConfigurations = configuration.getGlobal(token, settings.configurationVersion);
 		let specificConfigurations = {};
 
 		try {
-			specificConfigurations = configuration.getByPackageName(token, settings.secretVersion);
+			specificConfigurations = configuration.getByPackageName(token, settings.configurationVersion);
 		} catch (error) {
 			console.error("Warning! Could not found configurations for this app. Loaded just global configurations");
 		}
@@ -108,16 +119,17 @@ GOOD LUCK!
 				finalConfigurations,
 				configuration.get(
 					token,
-					settings.secretVersion,
+					settings.configurationVersion,
 					configPath
 				)
 			);
 		});
 	}
 
-	// Load it
-	Object.assign(process.env, finalConfigurations);
+	// Configuration verification
+	if (settings.requiredEnvVars) configuration.validate(settings.requiredEnvVars, finalConfigurations);
 
-	// Cache it
+	// Load configuration and cache it
+	Object.assign(process.env, finalConfigurations);
 	if (environment === "development") cache.create(finalConfigurations);
 };
