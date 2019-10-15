@@ -1,6 +1,6 @@
 {
     "name": "@wrecking-ball-software/vault-client",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "A Vault client that makes easier to work with configurations and secrets.",
     "main": "index.js",
     "repository": {
