@@ -11,14 +11,12 @@ const request = require("./request");
 //////
 
 const environment = process.env.NODE_ENV;
-const appName = process.env.npm_package_name;
 
 //////
 // Validates env vars
 //////
 
 if (!environment) throw new Error("Environment isn't defined.");
-if (!appName) throw new Error("appRole auth strategy requires application name.");
 
 //////
 // Exported functionality(ies)
@@ -73,7 +71,7 @@ const getGlobal = (token, version) => {
  *
  * @returns configurations
  */
-const getByPackageName = (token, version) => {
+const getByPackageName = (token, appName, version) => {
 	let configurationsURL = `${appName}/${environment}`;
 	return get(token, version, configurationsURL);
 };

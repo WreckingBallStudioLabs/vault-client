@@ -32,6 +32,7 @@ if (!environment) throw new Error("Environment isn't defined.");
  * Constructs a new Vault client
  *
  * @param {Object} [settings] custom settings
+ * @param {Object} [settings.appName] application name
  * @param {Object} [settings.configurationVersion] version of the configuration to be retrieved
  * @param {Object} [settings.humanAuthStrategy]  human auth strategy
  * @param {Object} [settings.m2mAuthStrategy] machine auth strategy
@@ -41,6 +42,8 @@ if (!environment) throw new Error("Environment isn't defined.");
 module.exports = (settings) => {
 	// Merges the default and user settings
 	settings = Object.assign({
+		// Application name
+		appName: process.env.npm_package_name,
 		// Configuration version
 		configurationVersion: process.env.VAULT_CONFIGURATIONS_VERSION, // default to latest
 		// Human auth strategy
@@ -102,7 +105,7 @@ GOOD LUCK!
 		let specificConfigurations = {};
 
 		try {
-			specificConfigurations = configuration.getByPackageName(token, settings.configurationVersion);
+			specificConfigurations = configuration.getByPackageName(token, settings.appName, settings.configurationVersion);
 		} catch (error) {
 			console.error("Warning! Could not found configurations for this app. Loaded just global configurations");
 		}
