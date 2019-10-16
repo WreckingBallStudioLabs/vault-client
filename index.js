@@ -52,6 +52,11 @@ module.exports = (settings) => {
 		m2mAuthStrategy: "appRole"
 	}, settings);
 
+	if (process.env.VAULT_CLIENT_ALREADY_LOADED) {
+		console.debug("Vault client already loaded configurations and secrets. Skipping...");
+		return;
+	}
+
 	// If Vault server isn't there, tries to use cache
 	try {
 		request.ping()
@@ -135,4 +140,7 @@ GOOD LUCK!
 	// Load configuration and cache it
 	Object.assign(process.env, finalConfigurations);
 	if (environment === "development") cache.create(finalConfigurations);
+
+	// Update control flag
+	process.env.VAULT_CLIENT_ALREADY_LOADED = "true";
 };
