@@ -90,7 +90,7 @@ GOOD LUCK!
 	// Machine login
 	if (settings.m2mAuthStrategy) {
 		try {
-			token = require(`./strategies/${settings.m2mAuthStrategy}`).login(token);
+			token = require(`./strategies/${settings.m2mAuthStrategy}`).login(token, settings.appName);
 		} catch (error) {
 			throw new Error(`Faile to authenticate human, error: ${error.message}`);
 		}

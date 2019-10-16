@@ -10,14 +10,8 @@ const request = require("../request");
 // Const and vars
 //////
 
-const appName = process.env.npm_package_name;
 let token;
-
-//////
-// Validates env vars
-//////
-
-if (!appName) throw new Error("appRole auth strategy requires application name.");
+let appName;
 
 //////
 // Helpers
@@ -84,12 +78,14 @@ const appRoleIDGetToken = () => {
  * Login an app.
  *
  * @param {String} t the user, or any token with power to call `appRole`
+ * @param {String} aN app name
  *
  * @returns token
  */
-const login = (t) => {
+const login = (t, aN) => {
 	// Set token
 	token = t;
+	appName = aN;
 
 	// Start login process
 	return appRoleIDGetToken();
