@@ -33,6 +33,7 @@ if (!environment) throw new Error("Environment isn't defined.");
  *
  * @param {Object} [settings] custom settings
  * @param {Object} [settings.appName] application name
+ * @param {Object} [settings.environments] the environments that Vault client should run
  * @param {Object} [settings.configurationVersion] version of the configuration to be retrieved
  * @param {Object} [settings.humanAuthStrategy]  human auth strategy
  * @param {Object} [settings.m2mAuthStrategy] machine auth strategy
@@ -42,16 +43,20 @@ if (!environment) throw new Error("Environment isn't defined.");
 module.exports = (settings) => {
 	// Merges the default and user settings
 	settings = Object.assign({
-		// Application name
+		environments: ["development", "production", "testing", "staging"],
 		appName: process.env.npm_package_name,
-		// Configuration version
 		configurationVersion: process.env.VAULT_CONFIGURATIONS_VERSION, // default to latest
-		// Human auth strategy
 		humanAuthStrategy: "userpass",
-		// Machine to machine auth strategy
 		m2mAuthStrategy: "appRole"
 	}, settings);
 
+	// Only run in the specified environments
+	if (!settings.environments.includes(process.env.NODE_ENV)) {
+		console.debug(`"${process.env.NODE_ENV}" environment isn't in the allowed environments list. Skipping...`);
+		return;
+	}
+
+	// Run once.
 	if (process.env.VAULT_CLIENT_ALREADY_LOADED) {
 		console.debug("Vault client already loaded configurations and secrets. Skipping...");
 		return;
