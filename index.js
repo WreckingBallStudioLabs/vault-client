@@ -114,6 +114,7 @@ GOOD LUCK!
 		const globalConfigurations = configuration.getGlobal(token, settings.configurationVersion);
 		let specificConfigurations = {};
 
+		// If there's no configuration, Vault throws an error. Here it's catch and handled properly.
 		try {
 			specificConfigurations = configuration.getByPackageName(token, settings.appName, settings.configurationVersion);
 		} catch (error) {
@@ -122,19 +123,21 @@ GOOD LUCK!
 
 		// Load into environment
 		finalConfigurations = Object.assign(
-			finalConfigurations,
-			globalConfigurations,
-			specificConfigurations
+			finalConfigurations, // target
+			globalConfigurations, // source
+			specificConfigurations, // source
+			process.env // respect whatever is already exported
 		);
 	} else {
 		settings.configurations.forEach(configPath => {
 			Object.assign(
-				finalConfigurations,
+				finalConfigurations, // target
 				configuration.get(
 					token,
 					settings.configurationVersion,
 					configPath
-				)
+				), // source
+				process.env // respect whatever is already exported
 			);
 		});
 	}
