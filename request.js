@@ -13,12 +13,6 @@ const request = require("sync-request");
 const host = process.env.VAULT_URL;
 
 //////
-// Validates env vars
-//////
-
-if (!host) throw new Error("Can't make request. Vault host isn't defined.");
-
-//////
 // Exported functionality(ies)
 //////
 

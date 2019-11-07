@@ -17,7 +17,10 @@ const cache = require("./cache");
 // Const and vars
 //////
 
+const username = process.env.VAULT_USERNAME;
 const environment = process.env.NODE_ENV;
+const host = process.env.VAULT_URL;
+const pwd = process.env.VAULT_PWD;
 
 //////
 // Validates env vars
@@ -51,6 +54,8 @@ module.exports = (settings) => {
 		m2mAuthStrategy: "appRole"
 	}, settings);
 
+	logger.info(`${process.env.NODE_ENV} environment detected`);
+
 	// Completly skip Vault client
 	if (process.env.VAULT_CLIENT_SKIP) {
 		logger.warn("Skipping...");
@@ -71,6 +76,11 @@ module.exports = (settings) => {
 
 	// Validate settings
 	if (!settings.appName) throw new Error(`"appName" need to be specified`);
+
+	// Validates env vars
+	if (!host) throw new Error("Can't make request. Vault host isn't defined.");
+	if (!username) throw new Error("userpass auth strategy requires username.");
+	if (!pwd) throw new Error("userpass auth strategy requires password.");
 
 	// If Vault server isn't there, tries to use cache
 	try {

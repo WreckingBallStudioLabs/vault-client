@@ -13,12 +13,6 @@ const request = require("./request");
 const environment = process.env.NODE_ENV;
 
 //////
-// Validates env vars
-//////
-
-if (!environment) throw new Error("Environment isn't defined.");
-
-//////
 // Exported functionality(ies)
 //////
 

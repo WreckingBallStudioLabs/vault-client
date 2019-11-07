@@ -14,13 +14,6 @@ const username = process.env.VAULT_USERNAME;
 const pwd = process.env.VAULT_PWD;
 
 //////
-// Validates env vars
-//////
-
-if (!username) throw new Error("userpass auth strategy requires username.");
-if (!pwd) throw new Error("userpass auth strategy requires password.");
-
-//////
 // Exported functionality(ies)
 //////
 
