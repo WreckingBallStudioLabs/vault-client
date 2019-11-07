@@ -18,7 +18,9 @@
     },
     "homepage": "https://github.com/WreckingBallStudioLabs/vault-client#readme",
     "dependencies": {
-        "sync-request": "^6.1.0"
+        "sync-request": "^6.1.0",
+        "pino-pretty": "^3.3.0",
+        "pino": "^5.13.5"
     },
     "engines": {
         "node": ">= 12.x.x"
