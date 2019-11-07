@@ -9,8 +9,9 @@
 //////
 
 const configuration = require("./configuration");
-const cache = require("./cache");
 const request = require("./request");
+const logger = require("./logger")("main");
+const cache = require("./cache");
 
 //////
 // Const and vars
@@ -50,26 +51,35 @@ module.exports = (settings) => {
 		m2mAuthStrategy: "appRole"
 	}, settings);
 
+	// Completly skip Vault client
+	if (process.env.VAULT_CLIENT_SKIP) {
+		logger.warn("Skipping...");
+		return;
+	}
+
 	// Only run in the specified environments
 	if (!settings.environments.includes(process.env.NODE_ENV)) {
-		console.debug(`"${process.env.NODE_ENV}" environment isn't in the allowed environments list. Skipping...`);
+		logger.warn(`"${process.env.NODE_ENV}" environment isn't in the allowed environments list. Skipping...`);
 		return;
 	}
 
 	// Run once.
 	if (process.env.VAULT_CLIENT_ALREADY_LOADED) {
-		console.debug("Vault client already loaded configurations and secrets. Skipping...");
+		logger.warn("Vault client already loaded configurations and secrets. Skipping...");
 		return;
 	}
 
+	// Validate settings
+	if (!settings.appName) throw new Error(`"appName" need to be specified`);
+
 	// If Vault server isn't there, tries to use cache
 	try {
-		request.ping()
+		request.ping();
 	} catch (error) {
 		// Cache should only work for development environment!
 		if (process.env.NODE_ENV === "development") {
 			// Notifies
-			console.error(`
+			logger.warn(`
 ///////////////
 (╯°□°）╯︵ ┻━┻
 WARNING: FAILED TO CONNECT TO VAULT!
@@ -79,8 +89,8 @@ GOOD LUCK!
 `);
 
 			// Try to load configurations from cache
-			const cachedConfigurations = cache.load();
-			Object.assign(process.env, cachedConfigurations)
+			const cachedConfigurations = cache.load(settings.appName);
+			Object.assign(process.env, cachedConfigurations);
 
 			return;
 		}
@@ -118,7 +128,7 @@ GOOD LUCK!
 		try {
 			specificConfigurations = configuration.getByPackageName(token, settings.appName, settings.configurationVersion);
 		} catch (error) {
-			console.error("Warning! Could not found configurations for this app. Loaded just global configurations");
+			logger.warn("Warning! Could not found configurations for this app. Loaded just global configurations");
 		}
 
 		// Load into environment
@@ -147,7 +157,10 @@ GOOD LUCK!
 
 	// Load configuration and cache it
 	Object.assign(process.env, finalConfigurations);
-	if (environment === "development") cache.create(finalConfigurations);
+	if (environment === "development") cache.create(settings.appName, finalConfigurations);
+
+	// Notify
+	logger.info(`Vault successfully loaded configurations for "${settings.appName}"`);
 
 	// Update control flag
 	process.env.VAULT_CLIENT_ALREADY_LOADED = "true";
