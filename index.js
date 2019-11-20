@@ -54,7 +54,7 @@ module.exports = (settings) => {
 		m2mAuthStrategy: "appRole"
 	}, settings);
 
-	logger.info(`${process.env.NODE_ENV} environment detected`);
+	logger.info(`"${process.env.NODE_ENV}" environment detected`);
 
 	// Completly skip Vault client
 	if (process.env.VAULT_CLIENT_SKIP) {
@@ -127,6 +127,7 @@ GOOD LUCK!
 	}
 
 	let finalConfigurations = {};
+	let loadedConfigurations = {};
 
 	// Custom configurations
 	if (!settings.configurations) {
@@ -142,6 +143,12 @@ GOOD LUCK!
 		}
 
 		// Load into environment
+		loadedConfigurations = Object.assign(
+			loadedConfigurations, // target
+			globalConfigurations, // source
+			specificConfigurations // source
+		);
+
 		finalConfigurations = Object.assign(
 			finalConfigurations, // target
 			globalConfigurations, // source
@@ -150,6 +157,15 @@ GOOD LUCK!
 		);
 	} else {
 		settings.configurations.forEach(configPath => {
+			loadedConfigurations = Object.assign(
+				loadedConfigurations, // target
+				configuration.get(
+					token,
+					settings.configurationVersion,
+					configPath
+				) // source
+			);
+
 			Object.assign(
 				finalConfigurations, // target
 				configuration.get(
@@ -171,6 +187,14 @@ GOOD LUCK!
 
 	// Notify
 	logger.info(`Vault successfully loaded configurations for "${settings.appName}"`);
+
+	// Debug feature: Only print in `development` env
+	if (process.env.NODE_DEBUG && process.env.NODE_ENV === "development") {
+		logger.info(
+			'Debug mode enabled. Printing loaded env vars:',
+			JSON.stringify(loadedConfigurations, null, 4)
+		);
+	}
 
 	// Update control flag
 	process.env.VAULT_CLIENT_ALREADY_LOADED = "true";
